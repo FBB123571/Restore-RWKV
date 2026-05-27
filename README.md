@@ -8,6 +8,7 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2407.11087-b31b1b.svg)](https://arxiv.org/abs/2407.11087)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-FBB123571-181717?logo=github)](https://github.com/FBB123571)
 
 ---
 
@@ -33,7 +34,7 @@
 ### 一键推理
 
 ```bash
-git clone https://github.com/Yaziwel/Restore-RWKV.git
+git clone https://github.com/FBB123571/Restore-RWKV.git
 cd Restore-RWKV
 bash run_demo.sh
 ```
