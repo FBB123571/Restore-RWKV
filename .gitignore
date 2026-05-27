@@ -1,0 +1,23 @@
+# 环境与缓存
+Ljh1433223/
+venv/
+__pycache__/
+*.py[cod]
+*.swo
+Miniconda3*.sh
+
+# 数据集（体积大，本地保留即可）
+data/dehaze_data/
+data/archive*.zip
+
+# 训练过程产生的多余权重（仅保留 checkpoints/rwkv 与 checkpoints/cnn 内指定文件）
+checkpoints_new_aligned/
+dehaze_model_epoch_*.pth
+*.pth
+!checkpoints/rwkv/rwkv_dehaze_epoch_50.pth
+!checkpoints/cnn/cnn_baseline_epoch_99.pth
+
+# 根目录临时输出
+original_hazy.png
+output_result.png
+dehazed_result_*.png
