@@ -1,0 +1,7 @@
+model,PSNR_mean,SSIM_mean,PSNR_std,SSIM_std,checkpoint
+V1,20.656550986262367,0.8270028058290482,2.597244944571074,0.08684093543098863,-
+Plg-A (ep0),20.6215963578117,0.8263542900085449,2.5285846104070098,0.08514111047869215,/mnt/sdb1/leijh/EnergySnake1/robot/Restore-RWKV/checkpoints/rwkv_plugin/plugin_A/plugin_A_epoch_0.pth
+Plg-B (template ep2),20.654078530074433,0.8269603683948517,2.5928826446374464,0.08672869650138479,/mnt/sdb1/leijh/EnergySnake1/robot/Restore-RWKV/checkpoints/rwkv_plugin_template/plugin_B_template/plugin_B_epoch_2.pth
+Plg-C (template ep2),20.656427254162313,0.8270002250671387,2.5970203704018284,0.08683575931578398,/mnt/sdb1/leijh/EnergySnake1/robot/Restore-RWKV/checkpoints/rwkv_plugin_template/plugin_C_template/plugin_C_epoch_2.pth
+Plg-D (template ep2),20.655773813657195,0.826994560956955,2.595113581759514,0.08681778288236394,/mnt/sdb1/leijh/EnergySnake1/robot/Restore-RWKV/checkpoints/rwkv_plugin_template/plugin_D_template/plugin_D_epoch_2.pth
+Hazy (input),13.882303891856226,0.7018043570518494,0,0,-

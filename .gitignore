@@ -21,3 +21,17 @@ dehaze_model_epoch_*.pth
 original_hazy.png
 output_result.png
 dehazed_result_*.png
+
+# 训练日志与失败实验产物（本地保留即可）
+logs/
+checkpoints/rwkv_v2/
+checkpoints/rwkv_v2_fair/
+checkpoints/rwkv_plugin/
+checkpoints/rwkv_plugin_v2/
+checkpoints/rwkv_plugin_template/
+outputs/four_direction_compare/
+outputs/four_direction_compare_fair/
+outputs/preview_first_three/
+outputs/preview_plugins/
+outputs/preview_plugins_epoch0/
+outputs/plugin_template_preview/
