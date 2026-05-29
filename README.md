@@ -18,9 +18,9 @@
 - 插件 A：[`outputs/preview_plugins_best128/`](outputs/preview_plugins_best128/)
 - 插件 B/C/D：[`outputs/preview_plugins_v2/`](outputs/preview_plugins_v2/)
 
-**中期实验报告**：[PDF 下载](docs/Restore-RWKV_中期实验报告.pdf)（含对比图、流程图、指标图）· [Markdown](docs/MIDTERM_REPORT.md)
+**大创中期报告（PDF）**：[下载](docs/Restore-RWKV_大创中期报告.pdf) · [Markdown 详版](docs/MIDTERM_REPORT_DACHUANG.md)
 
-重新生成 PDF：`python scripts/generate_midterm_report_premium.py` · [PDF 下载](docs/Restore-RWKV_中期实验报告.pdf)
+重新生成：`python scripts/generate_dachuang_midterm_pdf.py`（PIL 中文渲染，含对比图与流程图） · [PDF 下载](docs/Restore-RWKV_中期实验报告.pdf)
 
 ---
 
