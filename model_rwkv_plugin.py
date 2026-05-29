@@ -11,9 +11,32 @@ import torch.nn.functional as F
 
 from depth_utils import pseudo_depth_from_rgb
 from model_rwkv import DehazeRWKV_Real
-from model_rwkv_v2 import FourierMix2D
 
 PluginName = Literal["A", "B", "C", "D"]
+
+
+class FourierMix2D(nn.Module):
+    """Frequency-domain amplitude gating (Direction A)."""
+
+    def __init__(self, channels: int):
+        super().__init__()
+        self.amp_gate = nn.Sequential(
+            nn.Conv2d(channels, channels, 1),
+            nn.Sigmoid(),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B, C, H, W = x.shape
+        dtype = x.dtype
+        x32 = x.float()
+        xf = torch.fft.rfft2(x32, norm="ortho")
+        gate = self.amp_gate(
+            F.interpolate(x32, size=xf.shape[-2:], mode="bilinear", align_corners=False)
+        )
+        xf = xf * gate.to(xf.dtype)
+        out = torch.fft.irfft2(xf, s=(H, W), norm="ortho")
+        return out.to(dtype)
+
 
 # Cap plugin contribution so training cannot blow past V1 (scale was growing to ~1.75).
 SCALE_MAX = 0.12

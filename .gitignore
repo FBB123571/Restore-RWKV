@@ -16,6 +16,8 @@ dehaze_model_epoch_*.pth
 *.pth
 !checkpoints/rwkv/rwkv_dehaze_epoch_50.pth
 !checkpoints/cnn/cnn_baseline_epoch_99.pth
+!checkpoints/rwkv_plugin_release/*.pth
+!checkpoints/rwkv_plugin_weights.zip
 
 # 根目录临时输出
 original_hazy.png
