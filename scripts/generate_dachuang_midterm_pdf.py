@@ -34,6 +34,29 @@ C_MUTED = "#616161"
 C_LINE = "#B0BEC5"
 C_BG_HL = "#E3F2FD"
 C_BOX = "#F5F9FC"
+C_GOLD = "#C9A227"
+C_NAVY = "#0A2463"
+C_NAVY2 = "#1E3A8A"
+
+PROJECT_META = {
+    "school": "中山大学",
+    "college": "智能工程学院",
+    "title": "基于 Vision-RWKV 的轻量化图像去雾方法研究与消融验证",
+    "leader": "刘小凡",
+    "members": "刘小凡、白冉",
+    "supervisor": "彭键清",
+    "supervisor_title": "副教授",
+    "project_type": "大学生创新训练计划（创新类）",
+    "period": "2025—2026 学年",
+    "date": "2026 年 5 月",
+    "repo": "https://github.com/FBB123571/Restore-RWKV",
+    "abstract": (
+        "本课题在 Restore-RWKV 去雾基线（V1）上，围绕频域混合、双域高频、深度门控、"
+        "空间精炼四条方向开展可插拔消融。中期已完成基线复现、插件框架、模板—全量训练流程、"
+        "主观对比图与 500 张 hold-out 客观评测。结果表明：轻量插件在强锚定约束下可稳定训练，"
+        "A/C 与 V1 最接近；尚未显著超越 V1，后续将针对难例与 epoch 选择继续优化。"
+    ),
+}
 
 
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
@@ -155,6 +178,132 @@ class Page:
             self.d.text((x, y + i * int(size * 1.4)), ln, fill=color, font=f)
 
 
+def _hex_rgb(h: str) -> tuple[int, int, int]:
+    h = h.lstrip("#")
+    return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
+
+
+def _lerp(a: int, b: int, t: float) -> int:
+    return int(a + (b - a) * t)
+
+
+def _draw_gradient_rect(d: ImageDraw.ImageDraw, box: tuple[int, int, int, int], c1: str, c2: str):
+    x0, y0, x1, y1 = box
+    r1, g1, b1 = _hex_rgb(c1)
+    r2, g2, b2 = _hex_rgb(c2)
+    h = max(1, y1 - y0)
+    for i in range(h):
+        t = i / h
+        d.line([(x0, y0 + i), (x1, y0 + i)], fill=(_lerp(r1, r2, t), _lerp(g1, g2, t), _lerp(b1, b2, t)))
+
+
+def _wrap_lines(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> list[str]:
+    lines: list[str] = []
+    for para in text.split("\n"):
+        buf = ""
+        for ch in para:
+            trial = buf + ch
+            if f.getlength(trial) <= max_w:
+                buf = trial
+            else:
+                if buf:
+                    lines.append(buf)
+                buf = ch
+        if buf:
+            lines.append(buf)
+    return lines or [""]
+
+
+def render_cover() -> Image.Image:
+    """精美封面：渐变顶栏 + 信息卡片 + 摘要区。"""
+    im = Image.new("RGB", (W, H), "#F7FAFD")
+    d = ImageDraw.Draw(im)
+
+    # 顶部渐变横幅
+    banner_h = 520
+    _draw_gradient_rect(d, (0, 0, W, banner_h), C_NAVY, C_NAVY2)
+
+    # 装饰光晕与斜线
+    overlay = Image.new("RGBA", (W, banner_h), (0, 0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    for i in range(-banner_h, W, 90):
+        od.line([(i, 0), (i + banner_h, banner_h)], fill=(255, 255, 255, 18), width=2)
+    od.ellipse([W - 340, -80, W + 60, 320], fill=(255, 255, 255, 22))
+    od.ellipse([-120, 260, 220, 600], fill=(201, 162, 39, 28))
+    im.paste(overlay, (0, 0), overlay)
+
+    d = ImageDraw.Draw(im)
+    d.rectangle([M, 36, W - M, 38], fill=C_GOLD)
+    d.text((M, 58), PROJECT_META["school"], fill="#E8EEF9", font=font(26))
+    d.text((M, 96), PROJECT_META["college"], fill="#B8C9E8", font=font(20))
+
+    cx = W // 2
+    badge_y = 150
+    d.ellipse([cx - 54, badge_y, cx + 54, badge_y + 108], outline=C_GOLD, width=3, fill="#163A7A")
+    d.text((cx - 36, badge_y + 32), "大创", fill=C_GOLD, font=font(36, True))
+
+    title1 = "大学生创新训练计划"
+    title2 = "项目中期检查报告"
+    f1, f2 = font(30, True), font(46, True)
+    d.text((cx - f1.getlength(title1) / 2, 290), title1, fill="#E3ECFA", font=f1)
+    d.text((cx - f2.getlength(title2) / 2, 340), title2, fill="white", font=f2)
+    d.line([(M + 40, 430), (W - M - 40, 430)], fill=C_GOLD, width=2)
+
+    # 项目名称条
+    card_x0, card_y0 = M - 10, 470
+    card_x1, card_y1 = W - M + 10, 560
+    d.rounded_rectangle([card_x0, card_y0, card_x1, card_y1], radius=14, fill="white", outline=C_GOLD, width=2)
+    proj = PROJECT_META["title"]
+    fp = font(24, True)
+    for i, ln in enumerate(_wrap_lines(proj, fp, card_x1 - card_x0 - 48)):
+        d.text((card_x0 + 24, card_y0 + 22 + i * 34), ln, fill=C_NAVY, font=fp)
+
+    # 信息表
+    info_y = 600
+    info_h = 360
+    d.rounded_rectangle([M, info_y, W - M, info_y + info_h], radius=18, fill="white", outline=C_LINE, width=2)
+    d.rectangle([M, info_y, M + 8, info_y + info_h], fill=C_H1)
+
+    rows = [
+        ("项目类型", PROJECT_META["project_type"]),
+        ("项目负责人", PROJECT_META["leader"]),
+        ("项目成员", PROJECT_META["members"]),
+        ("指导教师", f"{PROJECT_META['supervisor']}（{PROJECT_META['supervisor_title']}）"),
+        ("所在学院", f"{PROJECT_META['school']} · {PROJECT_META['college']}"),
+        ("项目周期", PROJECT_META["period"]),
+        ("报告日期", PROJECT_META["date"]),
+        ("代码仓库", PROJECT_META["repo"]),
+    ]
+    label_w = 200
+    row_h = 42
+    fy, fv = font(18, True), font(17)
+    for i, (lab, val) in enumerate(rows):
+        y = info_y + 18 + i * row_h
+        if i % 2 == 0:
+            d.rectangle([M + 8, y - 2, W - M, y + row_h - 6], fill="#F8FBFF")
+        d.text((M + 28, y + 6), lab, fill=C_H1, font=fy)
+        for j, ln in enumerate(_wrap_lines(val, fv, W - M - M - label_w - 40)):
+            d.text((M + 28 + label_w, y + 6 + j * 22), ln, fill=C_BODY, font=fv)
+
+    # 摘要
+    abs_y = info_y + info_h + 36
+    abs_h = 300
+    d.rounded_rectangle([M, abs_y, W - M, abs_y + abs_h], radius=16, fill=C_BOX, outline=C_H1, width=2)
+    d.rectangle([M, abs_y, M + 6, abs_y + abs_h], fill=C_GOLD)
+    d.text((M + 28, abs_y + 20), "摘　要", fill=C_H1, font=font(26, True))
+    fa = font(18)
+    ay = abs_y + 68
+    for ln in _wrap_lines(PROJECT_META["abstract"], fa, W - 2 * M - 56):
+        d.text((M + 28, ay), ln, fill=C_BODY, font=fa)
+        ay += 30
+
+    # 页脚装饰
+    d.line([(M, H - 70), (W - M, H - 70)], fill=C_LINE, width=1)
+    foot = f"{PROJECT_META['school']} {PROJECT_META['college']} · Restore-RWKV 去雾消融研究"
+    d.text((M, H - 52), foot, fill=C_MUTED, font=font(15))
+    return im
+
+
 def build_montage(name: str) -> Path | None:
     FIG.mkdir(parents=True, exist_ok=True)
     out = FIG / f"montage_{name}"
@@ -209,31 +358,8 @@ def render_pages() -> list[Image.Image]:
             pages.append(pg.im)
         return Page()
 
+    pages.append(render_cover())
     p = Page()
-    # cover
-    p.d.rectangle([0, 0, W, 360], fill=C_TITLE)
-    p.text_at(M, 120, "大学生创新训练计划", 32, True, "white")
-    p.text_at(M, 180, "项目中期检查报告", 40, True, "white")
-    p.y = 400
-    p.text("项目名称：基于 Vision-RWKV 的轻量化图像去雾方法研究与消融验证", 22, bold=True)
-    p.text("项目负责人：刘小凡", 20)
-    p.text("指导教师：（请按任务书填写）", 20)
-    p.text("所在学院：（请按任务书填写）", 20)
-    p.text("报告日期：2026 年 5 月", 20)
-    p.text("代码仓库：https://github.com/FBB123571/Restore-RWKV", 18, C_MUTED)
-    p.y += 20
-    p.d.rounded_rectangle([M, p.y, W - M, p.y + 200], radius=16, outline=C_H1, width=2, fill=C_BOX)
-    p.text_at(M + 20, p.y + 20, "摘  要", 24, True, C_H1)
-    p.text_at(
-        M + 20,
-        p.y + 60,
-        "本课题在 Restore-RWKV 去雾基线（V1）上，围绕频域混合、双域高频、深度门控、"
-        "空间精炼四条方向开展可插拔消融。中期已完成基线复现、插件框架、模板—全量训练流程、"
-        "主观对比图与 500 张 hold-out 客观评测。结果表明：轻量插件在强锚定约束下可稳定训练，"
-        "A/C 与 V1 最接近；尚未显著超越 V1，后续将针对难例与 epoch 选择继续优化。",
-        18,
-    )
-    p = flush(p)
 
     sections = [
         ("一、研究背景与意义", (
