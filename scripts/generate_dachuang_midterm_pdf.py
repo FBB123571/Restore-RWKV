@@ -43,9 +43,9 @@ PROJECT_META = {
     "college": "智能工程学院",
     "title": "基于 Vision-RWKV 的轻量化图像去雾方法研究与消融验证",
     "leader": "刘小凡",
-    "members": "刘小凡、白冉",
-    "supervisor": "彭键清",
-    "supervisor_title": "副教授",
+    "members": "杨媛迪、汪静怡、刘小凡、郭嘉恒",
+    "supervisor": "金枝",
+    "supervisor_title": "",
     "project_type": "大学生创新训练计划（创新类）",
     "period": "2025—2026 学年",
     "date": "2026 年 5 月",
@@ -268,7 +268,11 @@ def render_cover() -> Image.Image:
         ("项目类型", PROJECT_META["project_type"]),
         ("项目负责人", PROJECT_META["leader"]),
         ("项目成员", PROJECT_META["members"]),
-        ("指导教师", f"{PROJECT_META['supervisor']}（{PROJECT_META['supervisor_title']}）"),
+        (
+            "指导教师",
+            PROJECT_META["supervisor"]
+            + (f"（{PROJECT_META['supervisor_title']}）" if PROJECT_META["supervisor_title"] else ""),
+        ),
         ("所在学院", f"{PROJECT_META['school']} · {PROJECT_META['college']}"),
         ("项目周期", PROJECT_META["period"]),
         ("报告日期", PROJECT_META["date"]),
@@ -451,9 +455,6 @@ def render_pages() -> list[Image.Image]:
     ]
     for r in refs:
         p.text(r, 17)
-
-    p.line(30)
-    p.text("项目负责人签字：____________    指导教师签字：____________    日期：2026年5月", 18)
 
     pages.append(p.im)
     return pages
