@@ -18,7 +18,9 @@
 - 插件 A：[`outputs/preview_plugins_best128/`](outputs/preview_plugins_best128/)
 - 插件 B/C/D：[`outputs/preview_plugins_v2/`](outputs/preview_plugins_v2/)
 
-**中期实验报告**：[`docs/MIDTERM_REPORT.md`](docs/MIDTERM_REPORT.md)
+**中期实验报告**：[PDF 下载](docs/Restore-RWKV_中期实验报告.pdf)（含对比图、流程图、指标图）· [Markdown](docs/MIDTERM_REPORT.md)
+
+重新生成 PDF：`python scripts/generate_midterm_report_premium.py` · [PDF 下载](docs/Restore-RWKV_中期实验报告.pdf)
 
 ---
 
@@ -43,6 +45,14 @@ python test_demo_cnn.py   # CNN 基线
 | `checkpoints/cnn/cnn_baseline_epoch_99.pth` | CNN 消融基线 |
 
 插件权重在本地 `checkpoints/rwkv_plugin_v2/`，需自行训练（见下）。
+
+**已发布权重**（仓库内 + [GitHub Releases](https://github.com/FBB123571/Restore-RWKV/releases)）：
+
+| 文件 | 说明 |
+|------|------|
+| `checkpoints/rwkv_plugin_release/plugin_A_epoch_0.pth` | A（近 V1） |
+| `checkpoints/rwkv_plugin_release/plugin_{A,B,C,D}_epoch_14.pth` | 全量训练最终 epoch |
+| `checkpoints/rwkv_plugin_weights.zip` | 以上打包下载 |
 
 ---
 
